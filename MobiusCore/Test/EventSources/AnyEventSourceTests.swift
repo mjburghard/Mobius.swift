@@ -18,7 +18,7 @@ import Nimble
 import Quick
 
 class AnyEventSourceTests: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("AnyEventSource") {
             var eventConsumer: TestConsumer!
             var delegateEventSource: TestEventSource<String>!
@@ -29,7 +29,7 @@ class AnyEventSourceTests: QuickSpec {
             }
 
             it("should forward delegate consumer to closure") {
-                let consumerForwarded = self.expectation(description: "consumer forwarded")
+                let consumerForwarded = self.current.expectation(description: "consumer forwarded")
 
                 let source = AnyEventSource<String>({ consumer in
                     let testString = UUID().uuidString
@@ -41,6 +41,7 @@ class AnyEventSourceTests: QuickSpec {
                 })
 
                 _ = source.subscribe(consumer: eventConsumer.accept)
+                self.current.wait(for: [consumerForwarded])
             }
 
             it("should forward events from delegate event source") {

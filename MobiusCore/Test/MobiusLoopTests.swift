@@ -19,7 +19,7 @@ import Quick
 
 class MobiusLoopTests: QuickSpec {
     // swiftlint:disable:next function_body_length
-    override func spec() {
+    override class func spec() {
         describe("MobiusLoop") {
             var builder: Mobius.Builder<String, String, String>!
             var loop: MobiusLoop<String, String, String>!

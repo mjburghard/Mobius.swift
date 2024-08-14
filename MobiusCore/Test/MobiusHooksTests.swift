@@ -18,7 +18,7 @@ import Nimble
 import Quick
 
 class MobiusHooksTests: QuickSpec {
-    override func spec() {
+    override class func spec() {
         let someString = UUID().uuidString
 
         describe("MobiusHooks") {

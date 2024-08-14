@@ -19,7 +19,7 @@ import Quick
 
 class ConnectablePublisherTests: QuickSpec {
     // swiftlint:disable:next function_body_length
-    override func spec() {
+    override class func spec() {
         describe("ConnectablePublisher") {
             var publisher: ConnectablePublisher<String>!
             var received: [String]!

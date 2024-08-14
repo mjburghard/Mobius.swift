@@ -17,7 +17,7 @@ import Nimble
 import Quick
 
 class LoggingInitiateTests: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("LoggingInitiate") {
             var logger: TestMobiusLogger!
             var loggingInitiate: Initiate<String, String>!

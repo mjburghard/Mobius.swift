@@ -21,11 +21,11 @@ import Quick
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 class MobiusControllerTests: QuickSpec {
-    let loopQueue = DispatchQueue(label: "loop queue")
-    let viewQueue = DispatchQueue(label: "view queue")
+    static let loopQueue = DispatchQueue(label: "loop queue")
+    static let viewQueue = DispatchQueue(label: "view queue")
 
     // swiftlint:disable:next function_body_length
-    override func spec() {
+    override class func spec() {
         describe("MobiusController") {
             var controller: MobiusController<String, String, String>!
             var view: RecordingTestConnectable!
@@ -384,7 +384,7 @@ class MobiusControllerTests: QuickSpec {
         }
     }
 
-    func makeSureAllEffectsAndEventsHaveBeenProcessed() {
+    static func makeSureAllEffectsAndEventsHaveBeenProcessed() {
         loopQueue.sync {
             // Waiting synchronously for effects to be completed
         }

@@ -17,7 +17,7 @@ import Nimble
 import Quick
 
 class ConnectionTests: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("Connection") {
             context("when initializing with closures") {
                 var connection: Connection<Int>!

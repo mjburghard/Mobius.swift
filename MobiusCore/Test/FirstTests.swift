@@ -22,7 +22,7 @@ class FirstTests: QuickSpec {
         case refresh
     }
 
-    override func spec() {
+    override class func spec() {
         describe("First") {
             var sut: First<String, Effect>!
 

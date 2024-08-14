@@ -19,7 +19,7 @@ import Quick
 
 class FirstMatchersTests: QuickSpec {
     // swiftlint:disable:next function_body_length
-    override func spec() {
+    override class func spec() {
         describe("assertThatFirst") {
             var failureMessages: [String] = []
             let model = "3"

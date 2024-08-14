@@ -37,7 +37,7 @@ enum MyEffect {
 
 class UpdateSpecTests: QuickSpec {
     // swiftlint:disable:next function_body_length
-    override func spec() {
+    override class func spec() {
         let updateSpec = UpdateSpec(myUpdate)
 
         describe("UpdateSpec") {
@@ -106,7 +106,7 @@ class UpdateSpecTests: QuickSpec {
         }
     }
 
-    let myUpdate = Update<MyModel, MyEvent, MyEffect> { model, event in
+    static let myUpdate = Update<MyModel, MyEvent, MyEffect> { model, event in
         switch event {
         case .didTapButton:
             return Next.next(MyModel(buttonClicked: !model.buttonClicked, count: model.count + 1))
