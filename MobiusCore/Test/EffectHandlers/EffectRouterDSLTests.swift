@@ -212,7 +212,7 @@ class EffectRouterDSLTests: QuickSpec {
                 var didDispatchEvents = false
                 let parameterExtractor: (Effect) -> Effect? = { $0 == .effect1 ? .effect1 : nil }
                 let dslHandler = EffectRouter<Effect, Event>()
-                    .routeEffects(withParameters: parameterExtractor).onMainActor().to { effect in
+                    .routeEffects(withParameters: parameterExtractor).onMainActor.to { effect in
                         performedEffects.append(effect)
                     }
                     .asConnectable
@@ -225,6 +225,55 @@ class EffectRouterDSLTests: QuickSpec {
                 expect(didDispatchEvents).to(beFalse())
             }
 
+            it("Supports routing to and receiving events from an onMainActor effect handler") {
+                guard #available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *) else {
+                    return
+                }
+
+                let performedEffects = Recorder<Effect>()
+                let receivedEvents = Recorder<Event>()
+                let wasDisposed = Recorder<Bool>()
+                let parameterExtractor: (Effect) -> Effect? = { $0 == .effect1 ? .effect1 : nil }
+                let dslHandler = EffectRouter<Effect, Event>()
+                    .routeEffects(withParameters: parameterExtractor).onMainActor.to { effect, callback in
+                        performedEffects.append(effect)
+                        callback.send(.eventForEffect1)
+                        return AnonymousDisposable {
+                            wasDisposed.append(true)
+                        }
+                    }
+                    .asConnectable
+                    .connect { receivedEvents.append($0) }
+
+                dslHandler.accept(.effect1)
+                expect(performedEffects.items).toEventually(equal([.effect1]))
+                expect(receivedEvents.items).toEventually(equal([.eventForEffect1]))
+
+                dslHandler.dispose()
+                expect(wasDisposed.items).toEventually(equal([true]))
+            }
+
+            it("Supports routing to an onMainActor event-returning function") {
+                guard #available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *) else {
+                    return
+                }
+
+                let performedEffects = Recorder<Effect>()
+                let receivedEvents = Recorder<Event>()
+                let parameterExtractor: (Effect) -> Effect? = { $0 == .effect1 ? .effect1 : nil }
+                let dslHandler = EffectRouter<Effect, Event>()
+                    .routeEffects(withParameters: parameterExtractor).onMainActor.toEvent { effect in
+                        performedEffects.append(effect)
+                        return .eventForEffect1
+                    }
+                    .asConnectable
+                    .connect { receivedEvents.append($0) }
+
+                dslHandler.accept(.effect1)
+                expect(performedEffects.items).toEventually(equal([.effect1]))
+                expect(receivedEvents.items).toEventually(equal([.eventForEffect1]))
+            }
+
             it("Supports routing to an onMainActor side-effecting function with no input parameters") {
                 guard #available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *) else {
                     return
@@ -234,7 +283,7 @@ class EffectRouterDSLTests: QuickSpec {
                 var didDispatchEvents = false
                 let parameterExtractor: (Effect) -> Void? = { $0 == .effect1 ? () : nil }
                 let dslHandler = EffectRouter<Effect, Event>()
-                    .routeEffects(withParameters: parameterExtractor).onMainActor().to {
+                    .routeEffects(withParameters: parameterExtractor).onMainActor.to {
                         effectPerformedCount.append(1)
                     }
                     .asConnectable
